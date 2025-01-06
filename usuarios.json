@@ -1,5 +1,6 @@
 {
-    "comentario": "Nomes ficticios serão usados neste exemplo para não prejudicar a integridade do projeto principal",
-    "teste": "valido",
-    "teste1": "valido"
+    "usuarios": [
+        "usuario1",
+        "usuario2"
+    ]
 }

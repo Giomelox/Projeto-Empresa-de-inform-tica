@@ -1575,7 +1575,7 @@ def obter_usuarios_validos():
     """Obtém a lista de usuários válidos de um arquivo JSON local."""
     try:
         # Abrindo o arquivo JSON local
-        with open("Caminho para o arquivo Json com os usuários válidos", "r") as file:
+        with open(r"C:\Users\Giovanni\Documents\GitHub\Projeto-Empresa-de-informatica\usuarios.json", "r") as file:
             data = json.load(file)  # Carrega o conteúdo do arquivo JSON
         
         # Verificando se a chave "usuarios" existe no dicionário
@@ -1588,10 +1588,11 @@ def obter_usuarios_validos():
     except Exception as e:
         return []  # Se ocorrer erro ao ler o arquivo, retorna lista vazia
 
+# Obtendo a lista de usuários válidos
 lista_autenticar = obter_usuarios_validos()
 
 def validar_usuario(self, instance):
-    """Valida o e-mail do usuário."""    
+    """Valida o e-mail do usuário."""
     email = self.email_autenticar.text.strip().lower()  # Remove espaços e transforma para minúsculas
     if not email:
         self.label_email_autenticar.text = "Por favor, insira um e-mail."
@@ -1603,14 +1604,14 @@ def validar_usuario(self, instance):
         return
 
     # Certifique-se de que `usuarios_validos` é uma lista e faça a verificação
-    if isinstance(lista_autenticar, list) and email in [u.lower() for u in lista_autenticar]:
-        self.label_email_autenticar.text = f" Acesso permitido! Bem-vindo(a)!"
+    if isinstance(lista_autenticar, list) and email in [u for u in lista_autenticar]:
+        self.label_email_autenticar.text = f"Acesso permitido! Bem-vindo(a)!"
         self.botao_entrar.disabled = False  # Desabilita o botão após sucesso na validação
-        self.botao_entrar.color = 0, 1 ,0 ,1
+        self.botao_entrar.color = 0, 1, 0, 1  # Verde para sucesso
     else:
         self.label_email_autenticar.text = "Acesso negado! Usuário não autorizado."
-        self.botao_entrar.disabled = True  # Certifica-se de que o botão está habilitado se necessário
-        self.botao_entrar.color = 1, 0 ,0 ,1
+        self.botao_entrar.disabled = True  # Certifica-se de que o botão está desabilitado em caso de falha
+        self.botao_entrar.color = 1, 0, 0, 1  # Vermelho para falha
 
 class BorderedButton(Button):
     def __init__(self, **kwargs):
