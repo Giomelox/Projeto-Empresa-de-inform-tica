@@ -1,0 +1,9 @@
+kivy
+selenium
+pandas
+google-auth
+google-auth-oauthlib
+openpyxl
+requests
+flask
+gunicorn
