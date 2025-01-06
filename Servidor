@@ -1,0 +1,82 @@
+import json
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Caminho do arquivo JSON que armazena os usuários válidos
+USUARIOS_JSON = "usuarios.json"
+
+def carregar_usuarios():
+    """Carrega os usuários válidos do arquivo JSON."""
+    try:
+        with open(USUARIOS_JSON, "r") as f:
+            usuarios_validos = json.load(f)
+        return usuarios_validos
+    except FileNotFoundError:
+        return {}  # Retorna um dicionário vazio caso o arquivo não exista
+
+def salvar_usuarios(usuarios):
+    """Salva os usuários válidos no arquivo JSON."""
+    with open(USUARIOS_JSON, "w") as f:
+        json.dump(usuarios, f)
+
+# Lista inicial de usuários válidos
+usuarios_validos = carregar_usuarios()
+
+@app.route("/")
+def home():
+    return "Servidor funcionando no Render!"
+
+@app.route("/validar_usuario", methods=["POST"])
+def validar_usuario():
+    """Valida se o usuário está autorizado."""
+    dados = request.json
+    email = dados.get("email")
+    
+    if not email:
+        return jsonify({"erro": "Email não fornecido"}), 400
+    
+    if email in usuarios_validos:
+        return jsonify({"autorizado": True})
+    return jsonify({"autorizado": False})
+
+@app.route("/usuarios", methods=["GET"])
+def listar_usuarios():
+    """Retorna a lista de usuários válidos."""
+    try:
+        return jsonify({"usuarios": list(usuarios_validos.keys())})
+    except Exception as e:
+        return jsonify({"erro": f"Erro ao obter usuários: {str(e)}"}), 500
+
+@app.route("/usuarios", methods=["POST"])
+def adicionar_usuario():
+    """Adiciona um usuário à lista de autorizados."""
+    dados = request.json
+    email = dados.get("email")
+    status = dados.get("status", "valido")
+    
+    if not email:
+        return jsonify({"erro": "Email não fornecido"}), 400
+    
+    usuarios_validos[email] = status
+    salvar_usuarios(usuarios_validos)  # Salva as mudanças no arquivo JSON
+    return jsonify({"mensagem": f"Usuário {email} adicionado com status {status}"})
+
+@app.route("/usuarios", methods=["DELETE"])
+def remover_usuario():
+    """Remove um usuário da lista de autorizados."""
+    dados = request.json
+    email = dados.get("email")
+    
+    if not email:
+        return jsonify({"erro": "Email não fornecido"}), 400
+
+    if email in usuarios_validos:
+        del usuarios_validos[email]
+        salvar_usuarios(usuarios_validos)  # Salva as mudanças no arquivo JSON
+        return jsonify({"mensagem": f"Usuário {email} removido com sucesso"})
+    else:
+        return jsonify({"erro": f"Usuário {email} não encontrado"}), 404
+
+if __name__ == "__main__":
+    app.run(debug=True)
