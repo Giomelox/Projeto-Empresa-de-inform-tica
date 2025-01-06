@@ -41,6 +41,7 @@ import email
 import os
 import re
 import requests
+import json
 
 if os.name == 'nt':  # Para Windows
     download_dir = Path(os.getenv('USERPROFILE')) / 'Downloads'
@@ -1569,28 +1570,23 @@ def criar_planilha_difal(self, *args):
             shutil.move('Planilha Difal.xlsx', download_dir)
         else:
             log_message(self.log_input, 'Não foi possível criar a planilha\n')
-         
-def obter_usuarios_validos():
-    """Obtém a lista de usuários válidos do servidor."""
-    try:
-        # Fazendo a requisição para obter a lista de usuários válidos
-        response = requests.get("https://servidor-para-emme2.onrender.com/usuarios")
-        
-        # Verificando se a resposta foi bem-sucedida
-        if response.status_code == 200:
-            data = response.json()  # Converte a resposta para JSON
 
-            if isinstance(data, dict) and "usuarios" in data:
-                usuarios = data["usuarios"]
-                return usuarios  # Retorna a lista de usuários
-            
-            else:
-                return []  # Se o formato for inesperado, retorna lista vazia
+def obter_usuarios_validos():
+    """Obtém a lista de usuários válidos de um arquivo JSON local."""
+    try:
+        # Abrindo o arquivo JSON local
+        with open("Caminho para o arquivo Json com os usuários válidos", "r") as file:
+            data = json.load(file)  # Carrega o conteúdo do arquivo JSON
+        
+        # Verificando se a chave "usuarios" existe no dicionário
+        if isinstance(data, dict) and "usuarios" in data:
+            usuarios = data["usuarios"]
+            return usuarios  # Retorna a lista de usuários
         else:
-            return []  # Se houver erro de status, retorna lista vazia
+            return []  # Se o formato for inesperado, retorna lista vazia
         
     except Exception as e:
-        return []  # Se ocorrer erro na requisição, retorna lista vazia
+        return []  # Se ocorrer erro ao ler o arquivo, retorna lista vazia
 
 lista_autenticar = obter_usuarios_validos()
 

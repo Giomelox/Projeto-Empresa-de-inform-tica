@@ -1,4 +1,4 @@
-import json
+"""import json
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -7,7 +7,7 @@ app = Flask(__name__)
 USUARIOS_JSON = "usuarios.json"
 
 def carregar_usuarios():
-    """Carrega os usuários válidos do arquivo JSON."""
+    # Carrega os usuários válidos do arquivo JSON.
     try:
         with open(USUARIOS_JSON, "r") as f:
             usuarios_validos = json.load(f)
@@ -16,7 +16,7 @@ def carregar_usuarios():
         return {}  # Retorna um dicionário vazio caso o arquivo não exista
 
 def salvar_usuarios(usuarios):
-    """Salva os usuários válidos no arquivo JSON."""
+    # Salva os usuários válidos no arquivo JSON.
     with open(USUARIOS_JSON, "w") as f:
         json.dump(usuarios, f)
 
@@ -29,7 +29,7 @@ def home():
 
 @app.route("/validar_usuario", methods=["POST"])
 def validar_usuario():
-    """Valida se o usuário está autorizado."""
+    # Valida se o usuário está autorizado.
     dados = request.json
     email = dados.get("email")
     
@@ -42,7 +42,7 @@ def validar_usuario():
 
 @app.route("/usuarios", methods=["GET"])
 def listar_usuarios():
-    """Retorna a lista de usuários válidos."""
+    # Retorna a lista de usuários válidos.
     try:
         return jsonify({"usuarios": list(usuarios_validos.keys())})
     except Exception as e:
@@ -50,7 +50,7 @@ def listar_usuarios():
 
 @app.route("/usuarios", methods=["POST"])
 def adicionar_usuario():
-    """Adiciona um usuário à lista de autorizados."""
+    # Adiciona um usuário à lista de autorizados.
     dados = request.json
     email = dados.get("email")
     status = dados.get("status", "valido")
@@ -64,7 +64,7 @@ def adicionar_usuario():
 
 @app.route("/usuarios", methods=["DELETE"])
 def remover_usuario():
-    """Remove um usuário da lista de autorizados."""
+    # Remove um usuário da lista de autorizados.
     dados = request.json
     email = dados.get("email")
     
@@ -80,3 +80,4 @@ def remover_usuario():
 
 if __name__ == "__main__":
     app.run(debug=True)
+"""
