@@ -11,9 +11,11 @@ from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, RoundedRectangle
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
-from funções.funções import log_message, validar_usuario, obter_usuarios_validos, baixar_arquivosXML_DELL, criar_planilha_entrada_nf_DELL
-from funções.funções import biparxml, SolicitarPlanilha, baixar_arquivosXML_HP, criar_planilha_entrada_nf_HP, valores_devolução_DELL, valores_devolução_HP
-from funções.funções import criar_planilha_difal, importar_produtos
+from funções.funções_conectar_email import baixar_arquivosXML_DELL, baixar_arquivosXML_HP
+from funções.funções_criar_planilhas import criar_planilha_entrada_nf_DELL, criar_planilha_entrada_nf_HP, criar_planilha_difal
+from funções.funções_Gerais import log_message, validar_usuario, obter_usuarios_validos, SolicitarPlanilha
+from funções.funções_elogistc import valores_devolução_DELL, valores_devolução_HP, biparxml
+from funções.funções_IOB import importar_produtos, emitir_NF_dev_dell, emitir_nf_circulação
 
 class BorderedButton(Button):
     def __init__(self, **kwargs):
@@ -100,7 +102,7 @@ class Tela_autenticação(Screen):
 
         autenticação_layout = FloatLayout()
 
-        imagemMatec = Image(source='imagemfundo.png', allow_stretch = True, keep_ratio = False, size_hint = (1, 1), pos_hint = {'x': 0, 'y': 0})
+        imagemMatec = Image(source = 'imagemfundo.png', allow_stretch = True, keep_ratio = False, size_hint = (1, 1), pos_hint = {'x': 0, 'y': 0})
          
         self.label_email_autenticar = Label(text = 'Digite seu email para entrar:', font_size = '20sp', size_hint = (0.3, 0.1), pos_hint = {'center_x': 0.5, 'y': 0.6}, color = (1,1,1,1))
         self.email_autenticar = TextInput(font_size = '20sp', size_hint = (0.4,0.07), pos_hint = {'center_x': 0.5, 'y': 0.55}, multiline = False, write_tab = False, halign = 'center', padding_y = (15, 15))
@@ -256,6 +258,12 @@ class Botoes_entrada_Dell(Screen):
         Importar_NF = BorderedButton(text = 'Importar NF', font_size = '25sp', size_hint = (0.3, 0.1), pos_hint = {'center_x': 0.17, 'y': 0.66}, color = (0, 0, 0, 1))
         Importar_NF.bind(on_release = self.importar_produtos)
 
+        Emitir_nf_circulação = BorderedButton(text = 'Emitir NF circulação', font_size = '25sp', size_hint = (0.3, 0.1), pos_hint = {'center_x': 0.50, 'y': 0.66}, color = (0, 0, 0, 1))
+        Emitir_nf_circulação.bind(on_release = self.emitir_nf_circulação)
+
+        Emitir_nf_entrada_tecnico = BorderedButton(text = 'Emitir NF recebimento\nTec.', font_size = '25sp', size_hint = (0.3, 0.1), pos_hint = {'center_x': 0.83, 'y': 0.66}, color = (0, 0, 0, 1))
+        Emitir_nf_entrada_tecnico.bind(on_release = self.emitir_nf_entrada_tec)
+
         self.log_input = TextInput(text = '**Logs e informações**\n\n', size_hint = (0.96, 0.6), pos_hint = {'center_x': 0.50, 'y': 0.03}, multiline = True, readonly = True, font_size = '25sp')
         
         botao_escolher_processo = BorderedButton_top(text = 'Voltar', font_size = '20sp', size_hint = (0.3, 0.05), pos_hint = {'center_x': 0.17, 'y': 0.93})
@@ -271,6 +279,8 @@ class Botoes_entrada_Dell(Screen):
         layout_entrada_dell.add_widget(botao_biparxml_dell)
         layout_entrada_dell.add_widget(botao_entradaNF_dell)
         layout_entrada_dell.add_widget(Importar_NF)
+        layout_entrada_dell.add_widget(Emitir_nf_circulação)
+        layout_entrada_dell.add_widget(Emitir_nf_entrada_tecnico)
         layout_entrada_dell.add_widget(self.log_input)
 
         self.add_widget(layout_entrada_dell)
@@ -286,6 +296,12 @@ class Botoes_entrada_Dell(Screen):
 
     def biparxml(self, *args):
         biparxml(self, *args)
+    
+    def emitir_nf_circulação(self, *args):
+        emitir_nf_circulação(self, *args)
+
+    def emitir_nf_entrada_tec(self, *args):
+        emitir_nf_entrada_tec(self, *args) # type: ignore
 
     def escolher_planilha(self, *args):
         """Escolher uma nova planilha e atualizar planilha_df."""
@@ -399,7 +415,7 @@ class Botoes_devolução_Dell(Screen):
     def __init__(self, **kwargs):
         super(Botoes_devolução_Dell, self).__init__(**kwargs)
 
-        imagemMatec = Image(source='imagemfundo.png', allow_stretch = True, keep_ratio = False, size_hint = (1, 1), pos_hint = {'x': 0, 'y': 0})
+        imagemMatec = Image(source = 'imagemfundo.png', allow_stretch = True, keep_ratio = False, size_hint = (1, 1), pos_hint = {'x': 0, 'y': 0})
 
         layout_devolução_Dell = FloatLayout()
 
@@ -407,7 +423,7 @@ class Botoes_devolução_Dell(Screen):
         botao_valores_devolução_Dell.bind(on_release = self.valores_devolução_DELL)
 
         botao_emitir_nf_Dell = BorderedButton(text = 'Emitir notas fiscais Dell', font_size = '25sp', size_hint = (0.3, 0.2), pos_hint = {'center_x': 0.5, 'y': 0.65}, color = (0, 0, 0, 1))
-        #botao_emitir_nf_Dell.bind(on_relase = self.emitir_nf_dell)
+        botao_emitir_nf_Dell.bind(on_release = self.emitir_NF_dev_dell)
 
         self.log_input = TextInput(text = '**Logs e informações**\n\n', size_hint = (0.96, 0.6), pos_hint = {'center_x': 0.50, 'y': 0.03}, multiline = True, readonly = True, font_size = '25sp')
 
@@ -426,12 +442,11 @@ class Botoes_devolução_Dell(Screen):
 
         self.add_widget(layout_devolução_Dell)
 
-
     def valores_devolução_DELL(self, *args):
         valores_devolução_DELL(self, *args) 
     
-    def emitir_nf_dell(self, *args):
-        emitir_nf_dell(self, *args) # type: ignore
+    def emitir_NF_dev_dell(self, *args):
+        emitir_NF_dev_dell(self, *args)
 
     def escolher_planilha(self, *args):
         """Escolher uma nova planilha e atualizar planilha_df."""
