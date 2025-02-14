@@ -773,7 +773,7 @@ def emitir_NF_dev_dell(self, *args):
             
             element_frete_terceiros = Select(driver.find_element(By.ID, 'nfe_carriage_modality'))
             
-            element_frete_terceiros.select_by_value('2')
+            element_frete_terceiros.select_by_value('1')
 
             # Encontra o bloco de selecionar a transportadora e insere no campo de transportadora
             element_transportadora = WebDriverWait(driver, 50).until( 
