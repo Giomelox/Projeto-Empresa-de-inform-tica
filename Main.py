@@ -2,13 +2,13 @@ from kivy.config import Config
 
 Config.set('graphics', 'width', '1000')
 Config.set('graphics', 'height', '800')
+Config.set('graphics', 'resizable', False)
 
 from kivy.uix.screenmanager import ScreenManager
 from kivy.app import App
 from Interface.screens import Tela_autenticação, MainMenu, Escolher_processo_entrada, Botoes_entrada_Dell
 from Interface.screens import Botoes_entrada_HP, escolher_processo_saída, Botoes_devolução_Dell, Botoes_devolução_HP
 from Interface.screens import Botoes_difal, configurar_contas
-
 
 class GerenciadorDeTelas(ScreenManager):
     pass
@@ -44,5 +44,5 @@ class Matec(App):
         return gerenciador
 
 # Executa o app Kivy
-if __name__ == "__main__":
+if __name__ == "__main__": 
     Matec().run()
